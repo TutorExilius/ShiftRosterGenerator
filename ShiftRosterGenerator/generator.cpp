@@ -136,7 +136,11 @@ std::vector<Candidate> Generator::splitToCandidates( const std::string &data ) c
 	for( const auto &name : splittedData )
 	{
 		std::string trimmedName = this->trim( name );
-		candidates.push_back( Candidate{ trimmedName } );
+
+		if( trimmedName.size() > 0 )
+		{
+			candidates.push_back( Candidate{ trimmedName } );
+		}
 	}
 
 	return candidates;
@@ -275,7 +279,7 @@ std::string Generator::trim( std::string str ) const
 
 	if( first == std::string::npos )
 	{
-		return str;
+		return "";
 	}
 
 	size_t last = str.find_last_not_of( ' ' );
