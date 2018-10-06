@@ -1,7 +1,5 @@
 # ShiftRosterGenerator
 
-#How to use:
-
 Download -> Compile -> Execute
 
 In Terminal:
