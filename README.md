@@ -1,5 +1,11 @@
 # ShiftRosterGenerator
 
+App generates a shift plan, with a fair distribution algorithm where every slot will be filled by a SINLGE candidate.
+App does not support a distribution per slot for more then one candidate!
+
+The goal is to gerenate a final shift plan, where every slot is assigned to a candidate who asked for that slot.
+The distribution algorithm tries to keep a balance between all candidates.
+
 Download -> Compile -> Execute
 
 In Terminal:
