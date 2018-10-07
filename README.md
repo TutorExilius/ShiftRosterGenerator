@@ -29,6 +29,8 @@ You will find an example input file 'example_shiftplan.csv' in data-dir. That fi
 
 Every Column must seperated by a (;) semicolon!
 
+---
+
 Example:
 
    ;  Monday        ; Thursday  ; Wednesday
@@ -39,9 +41,9 @@ Example:
 
 12h;  Tom, Ben      ; Bart,Lisa ; Harry
 
+---
 
-
-Explanation:
+Explanation of CSV File Structure:
 
 -> First Row of Sheet (CSV File) must be a sheet of Column-Titles.
 
