@@ -24,8 +24,14 @@ must be preserved.Contributors provide an express grant of patent rights.
 #include "nullptr_exception.h"
 #include "no_data_exception.h"
 
+#include "app_info.h"
+
 int main( int argc, char *argv[] )
 {
+	std::cerr << APP_NAME << std::endl;
+	std::cerr << "Version: " << STRING_VERSION << std::endl;
+	std::cerr << AUTHOR << "(" AUTHOR_EMAIL ")\n"<< std::endl;
+
 	try
 	{
 		if( argc >= 2 && argc <= 3 )
