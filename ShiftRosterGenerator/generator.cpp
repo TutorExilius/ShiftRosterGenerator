@@ -125,7 +125,7 @@ void Generator::generateBlocks()
 			Block block{ i-1, j-1, currentRowName, currentColumnName };
 
 			std::string data = matrix[i][j];
-			std::vector<Candidate> candidates = this->splitToCandidates( data );
+			std::vector<Candidate> candidates = this->splitToCandidates( std::move(data) );
 
 			// collect Candidates to list and assign them to the new block
 			for( const auto &candidate : candidates )
@@ -174,7 +174,7 @@ std::vector<Candidate> Generator::splitToCandidates( std::string data ) const
 		}
 	}
 
-	return candidates;
+	return std::move( candidates );
 }
 
 void Generator::printBlocks() const
@@ -312,7 +312,7 @@ std::vector<Block*> Generator::getFreeBlocksByCandidatesCnt( const size_t candid
 		}
 	}
 
-	return candidateCountedBlocks;
+	return std::move( candidateCountedBlocks );
 }
 
 Block* Generator::getMostCriticalBlock( const std::vector<Block*> &blocks ) const

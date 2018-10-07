@@ -30,7 +30,7 @@ int main( int argc, char *argv[] )
 {
 	std::cerr << APP_NAME << std::endl;
 	std::cerr << "Version: " << STRING_VERSION << std::endl;
-	std::cerr << AUTHOR << "(" AUTHOR_EMAIL ")\n"<< std::endl;
+	std::cerr << AUTHOR << " (" AUTHOR_EMAIL ")"<< std::endl;
 
 	try
 	{
