@@ -126,6 +126,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="app_info.h" />
     <ClInclude Include="block.h" />
     <ClInclude Include="candidate.h" />
     <ClInclude Include="csvparser.h" />

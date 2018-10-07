@@ -53,5 +53,8 @@
     <ClInclude Include="no_data_exception.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="app_info.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
