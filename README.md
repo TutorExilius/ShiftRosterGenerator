@@ -23,7 +23,7 @@ EXECUTABLE "inputFile_yourShiftPlanWithCandidates.csv" "outputFile_FinalDistribu
 
 ------
 
-Data in Input CSV File (Table Sheet):
+The Input CSV File (Table Sheet):
 
 You will find an example input file 'example_shiftplan.csv' in data-dir. That file can be used as template csv input file.
 
