@@ -134,6 +134,10 @@
     <ClInclude Include="generator.h" />
     <ClInclude Include="no_data_exception.h" />
     <ClInclude Include="nullptr_exception.h" />
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ShiftRosterGenerator.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
