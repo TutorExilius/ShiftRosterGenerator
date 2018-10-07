@@ -32,9 +32,13 @@ Every Column must seperated by a (;) semicolon!
 Example:
 
    ;  Monday        ; Thursday  ; Wednesday
+   
 10h;  Susan, Paul   ; Tom       ; Martin
+
 11h;  Tim, Hermione ; Lisa      ; Bart 
+
 12h;  Tom, Ben      ; Bart,Lisa ; Harry
+
 
 
 Explanation:
