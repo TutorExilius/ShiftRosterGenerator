@@ -27,6 +27,16 @@ The Input CSV File (Table Sheet):
 
 You will find an example input file 'example_shiftplan.csv' in data-dir. That file can be used as template csv input file.
 
+Every Column must seperated by a (;) semicolon!
+
+Example:
+
+   ;  Monday        ; Thursday  ; Wednesday
+10h;  Susan, Paul   ; Tom       ; Martin
+11h;  Tim, Hermione ; Lisa      ; Bart 
+12h;  Tom, Ben      ; Bart,Lisa ; Harry
+
+
 Explanation:
 
 -> First Row of Sheet (CSV File) must be a sheet of Column-Titles.
