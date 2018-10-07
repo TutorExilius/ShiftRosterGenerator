@@ -36,7 +36,6 @@ int main( int argc, char *argv[] )
 	{
 		if( argc >= 2 && argc <= 3 )
 		{
-			std::cin.get();
 			Generator generator{ argv[1] };
 
 			if( argc == 3 )
