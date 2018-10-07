@@ -25,7 +25,7 @@ EXECUTABLE "inputFile_yourShiftPlanWithCandidates.csv" "outputFile_FinalDistribu
 
 The Input CSV File (Table Sheet):
 
-You will find an example input file 'example_shiftplan.csv' in data-dir. That file can be used as template csv input file.
+YOU WILL FIND AN EXAMPLE INPUT FILE 'example_shiftplan.csv' in data-dir. That file can be used as template csv input file.
 
 Every Column must seperated by a (;) semicolon!
 
