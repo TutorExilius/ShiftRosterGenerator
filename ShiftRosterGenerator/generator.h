@@ -29,6 +29,8 @@ class Generator
 {
 public:
 	static std::vector<std::string> split( const std::string &line, const char SEPERATOR );
+	static std::string replaceAll( std::string str, const std::string& from, const std::string& to );
+	static std::string trim( std::string str );
 
 	explicit Generator( const std::string &fileName );
 
@@ -74,12 +76,11 @@ private:
 	// Helper-Methods ---
 	Candidate* addCandidate( const Candidate &candidate );
 	void generateBlocks();
-	std::vector<Candidate> splitToCandidates( const std::string &data ) const;
+	std::vector<Candidate> splitToCandidates( std::string data ) const;
 	void distributeBlocks();
 	size_t countFreeDistributableBlocks() const;
 	size_t countFreeDistributableCandidates() const;
 	std::vector<Block*> getFreeBlocksByCandidatesCnt( const size_t candidatesCnt ) const;
-	std::string trim( std::string str ) const;
 	// ---
 
 	CSVParser csvParser;

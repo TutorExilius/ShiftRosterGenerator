@@ -31,7 +31,7 @@ public:
 		FINISHED
 	};
 
-	explicit CSVParser( const std::string &fileName );
+	explicit CSVParser( const std::string &fileName, const char SEPERATOR = ';' );
 
 	void parse();
 
@@ -58,6 +58,7 @@ private:
 	LINE_READ_STATE currentLineReadState;
 	std::string csvFile;
 	std::vector<std::vector<std::string>> data_matrix;
+	char seperator;
 };
 
 #endif // CSVPARSER_H

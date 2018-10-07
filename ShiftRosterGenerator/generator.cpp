@@ -40,6 +40,33 @@ std::vector<std::string> Generator::split( const std::string &line, const char S
 	return splittedStrings;
 }
 
+std::string Generator::replaceAll( std::string str, const std::string& from, const std::string& to )
+{
+	size_t start_pos = 0;
+
+	while( ( start_pos = str.find( from, start_pos ) ) != std::string::npos )
+	{
+		str.replace( start_pos, from.size(), to );
+		start_pos += to.size();
+	}
+
+	return std::move(str );
+} 
+
+std::string Generator::trim( std::string str )
+{
+	size_t first = str.find_first_not_of(' ');
+
+	if (first == std::string::npos)
+	{
+		return "";
+	}
+
+	size_t last = str.find_last_not_of(' ');
+
+	return std::move( str.substr( first, (last - first + 1) ) );
+}
+
 Generator::Generator( const std::string &fileName )
 : csvParser{ fileName }
 , rowCnt{ 0 }
@@ -91,6 +118,7 @@ void Generator::generateBlocks()
 
 		// start j with index 1. Index 0 contains RowNames!
 		for( size_t j = 1; j < matrix.at(i).size(); j++ )
+
 		{
 			const std::string currentColumnName = matrix[0][j];
 
@@ -127,9 +155,12 @@ void Generator::generateBlocks()
 	}
 }
 
-std::vector<Candidate> Generator::splitToCandidates( const std::string &data ) const
+std::vector<Candidate> Generator::splitToCandidates( std::string data ) const
 {
 	std::vector<Candidate> candidates;
+
+	// remove masked newlines
+	data = Generator::replaceAll( data, "\\n", "" );
 
 	std::vector<std::string> splittedData = Generator::split( data, ',' );
 
@@ -150,7 +181,9 @@ void Generator::printBlocks() const
 {
 	for( const auto &block : this->blocks )
 	{
-		std::cout << block.toString() << std::endl;
+		// unmask all masked newlines (masked from CSVParser, see "void CSVParser::parse()" )
+		std::string blockAsString = block.toString();
+		std::cout << Generator::replaceAll( std::move(blockAsString), "\\n", "\n") << std::endl;
 	}
 }
 
@@ -177,7 +210,8 @@ std::string Generator::getResultAsCSV( const char SEPERATOR )
 			
 			if( assignedCandidate != nullptr )
 			{
-				resultMatrix[i+1][j+1] = matrix[i][j]->getAssignedCandidate()->getName();
+				const std::string candidateName = matrix[i][j]->getAssignedCandidate()->getName();
+				resultMatrix[i + 1][j + 1] = candidateName;
 			}
 			else
 			{
@@ -191,7 +225,15 @@ std::string Generator::getResultAsCSV( const char SEPERATOR )
 	{
 		for( size_t j = 0; j < resultMatrix[i].size(); ++j )
 		{
-			outStream << resultMatrix[i][j] << SEPERATOR;
+			std::string data = resultMatrix[i][j];
+
+			// if has newline, add removed quotes to tell CSV, that data need to be newlined in single column field
+			if( data.find("\n") != std::string::npos )
+			{
+				data = "\"" + data + "\"";
+			}
+
+			outStream << data << SEPERATOR;
 		}
 		outStream << std::endl;
 	}
@@ -271,20 +313,6 @@ std::vector<Block*> Generator::getFreeBlocksByCandidatesCnt( const size_t candid
 	}
 
 	return candidateCountedBlocks;
-}
-
-std::string Generator::trim( std::string str ) const
-{
-	size_t first = str.find_first_not_of( ' ' );
-
-	if( first == std::string::npos )
-	{
-		return "";
-	}
-
-	size_t last = str.find_last_not_of( ' ' );
-
-	return str.substr( first, ( last - first + 1 ) );
 }
 
 Block* Generator::getMostCriticalBlock( const std::vector<Block*> &blocks ) const
