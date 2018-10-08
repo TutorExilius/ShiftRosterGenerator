@@ -31,7 +31,7 @@ Every Column must seperated by a (;) semicolon!
 
 ---
 
-# Example:
+### Example:
 
    ;  Monday        ; Thursday  ; Wednesday
    
