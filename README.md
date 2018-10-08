@@ -1,4 +1,4 @@
-# ShiftRosterGenerator
+# Shift Roster Generator
 
 ------
 
