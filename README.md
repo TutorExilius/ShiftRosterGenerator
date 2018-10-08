@@ -46,6 +46,7 @@ Every Column must seperated by a (;) semicolon!
 
 - the other fields are data fields. There are not allowed data outsite of data fields. Your table data need to be inside of a valid row and column index (valid means, there must exist a column and row title for each data field). Every data field can contain more than one entry (name of candidate, who is asking for that slot). If you want more than one candidate names (maybe there are more than one candidate, who asked for that slot), you have to seperate them by a comma! If no comma found, data will be handled as one name!
 
+-----
 
 PS: sorry for my english :) I hope, you will understand this documentation.
 
