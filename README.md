@@ -19,7 +19,7 @@ EXECUTABLE "inputFile_yourShiftPlanWithCandidates.csv" "outputFile_FinalDistribu
 
 - Application will generate a shift plan based on input file.
 
-- Second argument is optional. If its not provided, result will be printed in standard output stream.
+- Second argument is optional. If its not provided, result will be printed in standard output stream (which can be also redirected in a file by using pipes)
 
 ------
 
