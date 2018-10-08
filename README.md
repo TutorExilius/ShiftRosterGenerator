@@ -5,7 +5,7 @@
 This App generates a shift plan with a fair distribution algorithm, where every slot will be filled by a SINLGE candidate.
 App does not support a distribution per slot for more then one candidate! The result (output) will always contain for every data field one candidate only!
 
-The goal is to gerenate a final shift plan, where every slot is assigned to only one of candidates who asked for that slot.
+The goal is to gerenate a final shift plan, where every slot is assigned to only one of the candidates who asked for that slot.
 The distribution algorithm tries to keep a balance between all candidates.
 
 ------
