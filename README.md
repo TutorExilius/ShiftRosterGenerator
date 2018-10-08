@@ -12,7 +12,7 @@ The distribution algorithm tries to keep a balance between all candidates.
 
 Download -> Compile -> Execute
 
-Use:
+##Use:
 
 In Terminal:
 EXECUTABLE "inputFile_yourShiftPlanWithCandidates.csv" "outputFile_FinalDistributedShiftPlan.csv"
@@ -23,7 +23,7 @@ EXECUTABLE "inputFile_yourShiftPlanWithCandidates.csv" "outputFile_FinalDistribu
 
 ------
 
-The Input CSV File (Table Sheet):
+##The Input CSV File (Table Sheet):
 
 YOU WILL FIND AN EXAMPLE INPUT FILE 'example_shiftplan.csv' in data-dir. That file can be used as template csv input file.
 
@@ -31,7 +31,7 @@ Every Column must seperated by a (;) semicolon!
 
 ---
 
-Example:
+#Example:
 
    ;  Monday        ; Thursday  ; Wednesday
    
@@ -43,7 +43,7 @@ Example:
 
 ---
 
-Explanation of CSV File Structure:
+##Explanation of CSV File Structure:
 
 - First Row of Sheet (CSV File) must be a sheet of Column-Titles.
 
@@ -58,6 +58,6 @@ PS: sorry for my english :) I hope, you will understand this documentation.
 
 ---
 
-BUGS:
+##BUGS:
 
 - the use of double quotes leads to incorrect results
