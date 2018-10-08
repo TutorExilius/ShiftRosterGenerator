@@ -55,3 +55,4 @@ PS: sorry for my english :) I hope, you will understand this documentation.
 ## BUGS:
 
 - the use of double quotes leads to incorrect results
+- Multilines in last column (candidates in last column of row are commas-eperated in more than one line) leads to incorrect results
