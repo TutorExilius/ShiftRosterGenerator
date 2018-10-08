@@ -1,6 +1,6 @@
 # Shift Roster Generator
 
-------
+--
 
 This App generates a shift plan with a fair distribution algorithm, where every slot will be filled by a SINLGE candidate.
 App does not support a distribution per slot for more then one candidate! The result (output) will always contain for every data field one candidate only!
@@ -8,7 +8,7 @@ App does not support a distribution per slot for more then one candidate! The re
 The goal is to gerenate a final shift plan, where every slot is assigned to only one of the candidates who asked for that slot.
 The distribution algorithm tries to keep a balance between all candidates.
 
-------
+--
 
 Download -> Compile -> Execute
 
@@ -21,7 +21,7 @@ EXECUTABLE "inputFile_yourShiftPlanWithCandidates.csv" "outputFile_FinalDistribu
 
 - Second argument is optional. If its not provided, result will be printed in standard output stream (which can be also redirected in a file by using pipes)
 
-------
+--
 
 ## The Input CSV File (Table Sheet):
 
@@ -29,7 +29,7 @@ YOU WILL FIND AN EXAMPLE INPUT FILE 'example_shiftplan.csv' in data-dir. That fi
 
 Every Column must seperated by a (;) semicolon!
 
----
+--
 
 ### Example:
 
@@ -41,7 +41,7 @@ Every Column must seperated by a (;) semicolon!
 
 12h;  Tom, Ben      ; Bart,Lisa ; Harry
 
----
+--
 
 ## Explanation of CSV File Structure:
 
@@ -51,12 +51,12 @@ Every Column must seperated by a (;) semicolon!
 
 - the other fields are data fields. There are not allowed data outsite of data fields. Your table data need to be inside of a valid row and column index (valid means, there must exist a column and row title for each data field). Every data field can contain more than one entry (name of candidate, who is asking for that slot). If you want more than one candidate names (maybe there are more than one candidate, who asked for that slot), you have to seperate them by a comma! If no comma found, data will be handled as one name!
 
-------
+--
 
 PS: sorry for my english :) I hope, you will understand this documentation.
 
 
----
+--
 
 ## BUGS:
 
