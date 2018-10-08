@@ -17,9 +17,9 @@ Use:
 In Terminal:
 EXECUTABLE "inputFile_yourShiftPlanWithCandidates.csv" "outputFile_FinalDistributedShiftPlan.csv"
 
--> Application will generate a shift plan based on input file.
+- Application will generate a shift plan based on input file.
 
--> Second argument is optional. If its not provided, result will be printed in standard output stream.
+- Second argument is optional. If its not provided, result will be printed in standard output stream.
 
 ------
 
@@ -45,11 +45,11 @@ Example:
 
 Explanation of CSV File Structure:
 
--> First Row of Sheet (CSV File) must be a sheet of Column-Titles.
+- First Row of Sheet (CSV File) must be a sheet of Column-Titles.
 
--> First Column of each row must contain the row-title.
+- First Column of each row must contain the row-title.
 
--> the other fields are data fields. There are not allowed data outsite of data fields. Your table data need to be inside of a valid row and column index (valid means, there must exist a column and row title for each data field). Every data field can contain more than one entry (name of candidate, who is asking for that slot). If you want more than one candidate names (maybe there are more than one candidate, who asked for that slot), you have to seperate them by a comma! If no comma found, data will be handled as one name!
+- the other fields are data fields. There are not allowed data outsite of data fields. Your table data need to be inside of a valid row and column index (valid means, there must exist a column and row title for each data field). Every data field can contain more than one entry (name of candidate, who is asking for that slot). If you want more than one candidate names (maybe there are more than one candidate, who asked for that slot), you have to seperate them by a comma! If no comma found, data will be handled as one name!
 
 ------
 
