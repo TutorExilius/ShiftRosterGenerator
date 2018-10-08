@@ -54,3 +54,11 @@ Explanation of CSV File Structure:
 ------
 
 PS: sorry for my english :) I hope, you will understand this documentation.
+
+---
+---
+---
+
+Bugs:
+
+- the use of double quotes leads to incorrect results
