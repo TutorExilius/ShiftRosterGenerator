@@ -116,8 +116,6 @@ void CSVParser::readLine( const std::string &line, const char SEPERATOR )
 
 	if( this->currentLineReadState == LINE_READ_STATE::SEARCHING_HEADER_ROW )
 	{
-		bool canSpanColumnVector = false;
-
 		auto result = std::find_if( seperatedValues.begin(),
 									seperatedValues.end(),
 									[]( const auto &val ){

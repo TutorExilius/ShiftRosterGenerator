@@ -53,11 +53,11 @@ public:
 	Block* getMostCriticalBlock( const std::vector<Block*> &blocks ) const;
 	Candidate* getMostCriticalCandidate( const std::vector<Candidate*> &candidates ) const;
 
-	size_t countWishWeighting( const std::vector<Candidate*> candidates ) const
+	size_t countWishWeighting( const std::vector<Candidate*> candidatesVec ) const
 	{
 		size_t wishWeigth = 0;
 
-		for( const auto &candidate : candidates )
+		for( const auto &candidate : candidatesVec)
 		{
 			wishWeigth += candidate->getWishedBlockCnt();
 		}

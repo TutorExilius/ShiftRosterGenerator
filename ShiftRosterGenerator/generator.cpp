@@ -125,10 +125,10 @@ void Generator::generateBlocks()
 			Block block{ i-1, j-1, currentRowName, currentColumnName };
 
 			std::string data = matrix[i][j];
-			std::vector<Candidate> candidates = this->splitToCandidates( std::move(data) );
+			std::vector<Candidate> candidatesVec = this->splitToCandidates( std::move(data) );
 
 			// collect Candidates to list and assign them to the new block
-			for( const auto &candidate : candidates )
+			for( const auto &candidate : candidatesVec )
 			{
 				Candidate *addedCandidate = this->addCandidate( candidate );
 			
@@ -157,7 +157,7 @@ void Generator::generateBlocks()
 
 std::vector<Candidate> Generator::splitToCandidates( std::string data ) const
 {
-	std::vector<Candidate> candidates;
+	std::vector<Candidate> candidatesVec;
 
 	// remove masked newlines
 	data = Generator::replaceAll( data, "\\n", "" );
@@ -170,11 +170,11 @@ std::vector<Candidate> Generator::splitToCandidates( std::string data ) const
 
 		if( trimmedName.size() > 0 )
 		{
-			candidates.push_back( Candidate{ trimmedName } );
+			candidatesVec.push_back( Candidate{ trimmedName } );
 		}
 	}
 
-	return std::move( candidates );
+	return std::move( candidatesVec );
 }
 
 void Generator::printBlocks() const
@@ -315,19 +315,19 @@ std::vector<Block*> Generator::getFreeBlocksByCandidatesCnt( const size_t candid
 	return std::move( candidateCountedBlocks );
 }
 
-Block* Generator::getMostCriticalBlock( const std::vector<Block*> &blocks ) const
+Block* Generator::getMostCriticalBlock( const std::vector<Block*> &blocksVec ) const
 {
-	if( blocks.size() == 0 )
+	if( blocksVec.size() == 0 )
 	{
 		return nullptr;
 	}
-	else if( blocks.size() == 1 )
+	else if( blocksVec.size() == 1 )
 	{
-		return const_cast<Block*>( blocks.at( 0 ) );
+		return const_cast<Block*>( blocksVec.at( 0 ) );
 	}
 	else
 	{
-		auto smallestWeigthingBlock = std::min_element( blocks.begin(), blocks.end(),
+		auto smallestWeigthingBlock = std::min_element( blocksVec.begin(), blocksVec.end(),
 			[this]( const Block *a, const Block *b ) -> bool
 			{
 				auto candidatesA = a->getCandidates();
@@ -341,41 +341,41 @@ Block* Generator::getMostCriticalBlock( const std::vector<Block*> &blocks ) cons
 	}
 }
 
-Candidate* Generator::getMostCriticalCandidate( const std::vector<Candidate*> &candidates ) const
+Candidate* Generator::getMostCriticalCandidate( const std::vector<Candidate*> &candidatesVec ) const
 {
-	if( candidates.size() == 0 )
+	if( candidatesVec.size() == 0 )
 	{
 		return nullptr;
 	}
-	else if( candidates.size() == 1 )
+	else if( candidatesVec.size() == 1 )
 	{
-		return const_cast<Candidate*>( candidates.at( 0 ) );
+		return const_cast<Candidate*>( candidatesVec.at( 0 ) );
 	}
 	else
 	{
-		auto smallestWeigthingCandidate = std::min_element( candidates.begin(), candidates.end(),
+		auto smallestWeigthingCandidate = std::min_element( candidatesVec.begin(), candidatesVec.end(),
 									[this]( const Candidate *a, const Candidate *b ) -> bool {
 			
-			if( a->getAssignedBlockCnt() > b->getAssignedBlockCnt() )
-			{
-				return false;
-			}
-			else if( a->getAssignedBlockCnt() < b->getAssignedBlockCnt() )
-			{
-				return true;
-			}
-			else
-			{
-				if( a->getWishedBlockCnt() >= b->getWishedBlockCnt() )
-				{
-					return false;
-				}
-				else
-				{
-					return true;
-				}
-			}
-		}
+										if( a->getAssignedBlockCnt() > b->getAssignedBlockCnt() )
+										{
+											return false;
+										}
+										else if( a->getAssignedBlockCnt() < b->getAssignedBlockCnt() )
+										{
+											return true;
+										}
+										else
+										{
+											if( a->getWishedBlockCnt() >= b->getWishedBlockCnt() )
+											{
+												return false;
+											}
+											else
+											{
+												return true;
+											}
+										}
+									}
 		);
 
 		return const_cast<Candidate*>( *smallestWeigthingCandidate );
