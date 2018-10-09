@@ -3,7 +3,7 @@
 Author:			Tutor Exilius (http://www.exilius.de)
 
 Created:		04.10.2018
-Last update:	04.10.2018
+Last update:	09.10.2018
 
 GNU General Public License v3.0
 
@@ -53,6 +53,34 @@ void CSVParser::parse()
 	{
 		if (line.size() > 0)
 		{
+			// begin try to fix bug (issue 2, github repo: https://github.com/TutorExilius/ShiftRosterGenerator/issues/2)
+			/* begin to fix...
+
+			//
+			//
+			//
+
+			size_t doubleQuoteCnt = 0;
+			std::for_each(line.begin(), line.end(), [&doubleQuoteCnt]( const char &c ) {
+					if (c == '\"')
+					{
+						++doubleQuoteCnt;
+					}
+				}
+			);
+
+			if( doubleQuoteCnt == 2 )
+			{
+				line = Generator::replaceAll(line, "\"", "");
+			}
+
+			//
+			//
+			// commented out. bugfix is not finished yet
+			*/
+
+
+			
 			// CSV masks value of column field in quotes (") if field value has more than 1 line in text
 			if( line[0] == '\"' && line[line.size() - 1] == '\"' )
 			{
@@ -78,7 +106,10 @@ void CSVParser::parse()
 				line = Generator::replaceAll(line, "\n", "\\n");
 				line = Generator::trim(line);
 			}
+
+			line = Generator::trim(line);
 		}
+
 		allColumnData.push_back( line );
 	}
 
