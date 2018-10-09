@@ -1,5 +1,13 @@
 # Shift Roster Generator
 
+---
+This application has its own Wiki-Page:
+https://github.com/TutorExilius/ShiftRosterGenerator/wiki
+
+There you will find a documentation with screenshots.
+
+---
+
 
 This App generates a shift plan with a fair distribution algorithm, where every slot will be filled by a SINLGE candidate.
 App does not support a distribution per slot for more then one candidate! The result (output) will always contain for every data field one candidate only!
@@ -38,20 +46,26 @@ Every Column must seperated by a (;) semicolon!
 12h;  Tom, Ben      ; Bart,Lisa ; Harry
 
 
-## Explanation of CSV File Structure:
+## Sheet-Structure
 
-- First Row of Sheet (CSV File) must be a sheet of Column-Titles.
+Your sheet need a fix defined structure:
 
-- First Column of each row must contain the row-title.
+- the first line of your sheet must contain the column-titles
 
-- the other fields are data fields. There are not allowed data outsite of data fields. Your table data need to be inside of a valid row and column index (valid means, there must exist a column and row title for each data field). Every data field can contain more than one entry (name of candidate, who is asking for that slot). If you want more than one candidate names (maybe there are more than one candidate, who asked for that slot), you have to seperate them by a comma! If no comma found, data will be handled as one name!
+- the first column of each tow must contain the row-title
 
------
+- there aren't allowed data outside the range of your sheet. The column- and row-titles are spanning the table-range. Data are allowed in that spanned range only. Data outside of that range will lead to incorrect results! So make shure, that every data has a column- and a row-title.
+
+
+## Bugs
+
+There are two reported bugs:
+
+**1.** Please don't use double quotes in your sheet. the application don't support double quotes as data value. The use of double quotes leads to incorrect results!
+
+**2.** Please don't use newlines in the last column of a row. The application accepts newlines in each column, but newlines in the last column leads to incorrect results.
+
+---
 
 PS: sorry for my english :) I hope, you will understand this documentation.
 
-
-
-## BUGS:
-
-- the use of double quotes leads to incorrect results
