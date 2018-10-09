@@ -206,7 +206,14 @@ std::string Generator::getResultAsCSV( const char SEPERATOR )
 	{
 		for( size_t j = 0; j < matrix[i].size(); ++j )
 		{
-			const Candidate *assignedCandidate = matrix[i][j]->getAssignedCandidate();
+			const Block *block = matrix[i][j];
+
+			if( block == nullptr )
+			{
+				continue;
+			}
+
+			const Candidate *assignedCandidate = block->getAssignedCandidate();
 			
 			if( assignedCandidate != nullptr )
 			{
