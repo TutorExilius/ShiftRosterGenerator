@@ -5,6 +5,7 @@ This application has its own Wiki-Page:
 https://github.com/TutorExilius/ShiftRosterGenerator/wiki
 
 There you will find a documentation with screenshots.
+
 ---
 
 
