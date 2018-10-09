@@ -59,8 +59,6 @@ Your sheet need a fix defined structure:
 
 ## Bugs
 
-There are two reported bugs:
-
 **1.** Please don't use double quotes in your sheet. the application don't support double quotes as data value. The use of double quotes leads to incorrect results!
 
 **2.** Please don't use newlines in the last column of a row. The application accepts newlines in each column, but newlines in the last column leads to incorrect results.
