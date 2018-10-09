@@ -1,5 +1,12 @@
 # Shift Roster Generator
 
+---
+This application has its own Wiki-Page:
+https://github.com/TutorExilius/ShiftRosterGenerator/wiki
+
+There you will find a documentation with screenshots.
+---
+
 
 This App generates a shift plan with a fair distribution algorithm, where every slot will be filled by a SINLGE candidate.
 App does not support a distribution per slot for more then one candidate! The result (output) will always contain for every data field one candidate only!
