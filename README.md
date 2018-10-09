@@ -65,6 +65,8 @@ There are two reported bugs:
 
 **2.** Please don't use newlines in the last column of a row. The application accepts newlines in each column, but newlines in the last column leads to incorrect results.
 
+**3.** Please don't use semicolon as value in a column. The use of semicolon will leads to incorrect results.
+
 ---
 
 PS: sorry for my english :) I hope, you will understand this documentation.
