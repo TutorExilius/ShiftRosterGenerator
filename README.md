@@ -1,4 +1,4 @@
-# Shift Roster Generator
+# Shift Roster Generator v1.1.2
 
 ---
 This application has its own Wiki-Page:
