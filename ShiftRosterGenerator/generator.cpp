@@ -3,7 +3,7 @@
 Author:			Tutor Exilius (http://www.exilius.de)
 
 Created:		04.10.2018
-Last update:	09.10.2018
+Last update:	13.10.2018
 
 GNU General Public License v3.0
 
@@ -161,11 +161,15 @@ std::vector<Candidate> Generator::splitToCandidates( std::string data ) const
 
 	// remove newlines
 	data = Generator::replaceAll( data, "\n", "" );
-	// remove first and last double quote
-	if( data.size() > 2 && data[0] == '\"' && data[data.size() - 1] == '\"' )
-	{
-		data = data.substr( 1, data.size() - 2 );
-	}
+
+	// remove seperators
+	data = Generator::replaceAll( data, std::string{ this->csvParser.getSeperator() }, "" );
+
+	// remove double qoutes
+	data = Generator::replaceAll( data, "\"", "" );
+
+	// remove single qoutes
+	data = Generator::replaceAll( data, "'", "" );
 
 	std::vector<std::string> splittedData = Generator::split( data, ',' );
 
