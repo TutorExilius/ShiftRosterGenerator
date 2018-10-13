@@ -171,6 +171,9 @@ std::vector<Candidate> Generator::splitToCandidates( std::string data ) const
 	// remove single qoutes
 	data = Generator::replaceAll( data, "'", "" );
 
+	// remove tabulators
+	data = Generator::replaceAll( data, "\t", "" );
+
 	std::vector<std::string> splittedData = Generator::split( data, ',' );
 
 	for( const auto &name : splittedData )
