@@ -57,13 +57,7 @@ Your sheet need a fix defined structure:
 - there aren't allowed data outside the range of your sheet. The column- and row-titles are spanning the table-range. Data are allowed in that spanned range only. Data outside of that range will lead to incorrect results! So make shure, that every data has a column- and a row-title.
 
 
-## Bugs
-
-**1.** Please don't use double quotes in your sheet. the application don't support double quotes as data value. The use of double quotes leads to incorrect results!
-
-**2.** Please don't use newlines in the last column of a row. The application accepts newlines in each column, but newlines in the last column leads to incorrect results.
-
-**3.** Please don't use semicolon as value in a column. The use of semicolon will leads to incorrect results.
+#### All Tabulators, Single-Quotes, Double-Quotes, Newlines and SEPERATOR-Characters will be removed in all Data-Columns (Candidate-Values)!
 
 ---
 
