@@ -4,8 +4,8 @@
 #define STR(x) STR_HELPER(x)
 
 #define VERSION_MAJOR 1
-#define VERSION_MINOR 0
-#define VERSION_PATCH 3
+#define VERSION_MINOR 1
+#define VERSION_PATCH 0
 
 #define APP_NAME "Shift Roster Generator"
 #define AUTHOR "Tutor Exilius"

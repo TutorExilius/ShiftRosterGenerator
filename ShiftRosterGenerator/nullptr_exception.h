@@ -25,7 +25,7 @@ class NullptrException : public std::exception
 {
 public:
 	NullptrException( const std::string &errorMessage )
-	: errorMessage{ errorMessage }
+		: errorMessage{ errorMessage }
 	{
 	}
 

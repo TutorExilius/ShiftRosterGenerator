@@ -30,13 +30,21 @@ int main( int argc, char *argv[] )
 {
 	std::cerr << APP_NAME << std::endl;
 	std::cerr << "Version: " << STRING_VERSION << std::endl;
-	std::cerr << AUTHOR << " (" AUTHOR_EMAIL ")"<< std::endl;
+	std::cerr << AUTHOR << " (" AUTHOR_EMAIL ")" << std::endl;
 
 	try
 	{
 		if( argc >= 2 && argc <= 3 )
 		{
-			Generator generator{ argv[1] };
+			std::string path = CSVParser::extractFilePath( argv[1] );
+			std::string file = CSVParser::extractFileName( argv[1] );
+
+			if( path.size() == 0 )
+			{
+				path = CSVParser::extractFilePath( argv[0] );
+			}
+
+			Generator generator{ path + file };
 
 			if( argc == 3 )
 			{

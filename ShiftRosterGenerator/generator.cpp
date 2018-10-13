@@ -50,44 +50,44 @@ std::string Generator::replaceAll( std::string str, const std::string& from, con
 		start_pos += to.size();
 	}
 
-	return std::move(str );
-} 
+	return std::move( str );
+}
 
 std::string Generator::trim( std::string str )
 {
-	size_t first = str.find_first_not_of(' ');
+	size_t first = str.find_first_not_of( ' ' );
 
-	if (first == std::string::npos)
+	if( first == std::string::npos )
 	{
 		return "";
 	}
 
-	size_t last = str.find_last_not_of(' ');
+	size_t last = str.find_last_not_of( ' ' );
 
-	return std::move( str.substr( first, (last - first + 1) ) );
+	return std::move( str.substr( first, ( last - first + 1 ) ) );
 }
 
 Generator::Generator( const std::string &fileName )
-: csvParser{ fileName }
-, rowCnt{ 0 }
-, columnCnt{ 0 }
+	: csvParser{ ';' }
+	, rowCnt{ 0 }
+	, columnCnt{ 0 }
 {
-	this->csvParser.parse();
+	this->csvParser.parse( fileName );
 	this->distributeBlocks();
 }
 
 Candidate* Generator::addCandidate( const Candidate &candidate )
 {
 	auto existingCandidate = std::find_if( this->candidates.begin(),
-		this->candidates.end(),
-		[&]( const Candidate &value ){
-			return candidate.getName() == value.getName();
-		}
+										   this->candidates.end(),
+										   [&]( const Candidate &value ){
+		return candidate.getName() == value.getName();
+	}
 	);
 
 	if( existingCandidate != this->candidates.end() )
 	{
-		return &(*existingCandidate);
+		return &( *existingCandidate );
 	}
 	else
 	{
@@ -101,14 +101,14 @@ void Generator::generateBlocks()
 	this->blocks.clear();
 	this->candidates.clear();
 
-	auto matrix = this->csvParser.getDataMatrix();
+	auto matrix = this->csvParser.getCSVMatrix();
 
 	this->rowCnt = matrix.size() - 1;
 
 	if( matrix.size() == 0 )
 		throw NoDataException( "No data extracted from csv file" );
 
-	this->columnCnt = matrix.at(0).size() - 1;
+	this->columnCnt = matrix.at( 0 ).size() - 1;
 
 	// Collect Raw Data from Matrix
 	// start i with index 1. Index 0 contains ColumnNames!
@@ -117,33 +117,33 @@ void Generator::generateBlocks()
 		const std::string currentRowName = matrix[i][0];
 
 		// start j with index 1. Index 0 contains RowNames!
-		for( size_t j = 1; j < matrix.at(i).size(); j++ )
+		for( size_t j = 1; j < matrix.at( i ).size(); j++ )
 
 		{
 			const std::string currentColumnName = matrix[0][j];
 
-			Block block{ i-1, j-1, currentRowName, currentColumnName };
+			Block block{ i - 1, j - 1, currentRowName, currentColumnName };
 
 			std::string data = matrix[i][j];
-			std::vector<Candidate> candidatesVec = this->splitToCandidates( std::move(data) );
+			std::vector<Candidate> candidatesVec = this->splitToCandidates( std::move( data ) );
 
 			// collect Candidates to list and assign them to the new block
 			for( const auto &candidate : candidatesVec )
 			{
 				Candidate *addedCandidate = this->addCandidate( candidate );
-			
+
 				block.addCandidate( addedCandidate );
 			}
 
 			// add new Block to list
 			this->blocks.push_back( block );
-			Block *newBlockRealPtr = &(this->blocks.back());
+			Block *newBlockRealPtr = &( this->blocks.back() );
 
 			// assign new added Block to candidates to all Candidates
 			for( const auto &candidate : candidates )
 			{
 				Candidate *candidatePtr = this->getCandidate( candidate.getName() );
-				
+
 				if( candidatePtr == nullptr )
 				{
 					throw NullptrException( "Candidate-Instance is nullptr." );
@@ -159,8 +159,13 @@ std::vector<Candidate> Generator::splitToCandidates( std::string data ) const
 {
 	std::vector<Candidate> candidatesVec;
 
-	// remove masked newlines
-	data = Generator::replaceAll( data, "\\n", "" );
+	// remove newlines
+	data = Generator::replaceAll( data, "\n", "" );
+	// remove first and last double quote
+	if( data.size() > 2 && data[0] == '\"' && data[data.size() - 1] == '\"' )
+	{
+		data = data.substr( 1, data.size() - 2 );
+	}
 
 	std::vector<std::string> splittedData = Generator::split( data, ',' );
 
@@ -177,32 +182,22 @@ std::vector<Candidate> Generator::splitToCandidates( std::string data ) const
 	return std::move( candidatesVec );
 }
 
-void Generator::printBlocks() const
-{
-	for( const auto &block : this->blocks )
-	{
-		// unmask all masked newlines (masked from CSVParser, see "void CSVParser::parse()" )
-		std::string blockAsString = block.toString();
-		std::cout << Generator::replaceAll( std::move(blockAsString), "\\n", "\n") << std::endl;
-	}
-}
-
-std::string Generator::getResultAsCSV( const char SEPERATOR )
+std::string Generator::getResultAsCSV() const
 {
 	std::stringstream outStream;
-	std::vector<std::vector<std::string>> resultMatrix = this->csvParser.getDataMatrix();
+	std::vector<std::vector<std::string>> resultMatrix = this->csvParser.getCSVMatrix();
 
 	std::vector<std::vector<const Block*>> matrix{};
 	matrix.assign( this->rowCnt, std::vector<const Block*>{ this->columnCnt } );
-	
+
 	for( const auto &block : this->blocks )
 	{
 		auto index = block.getIndex();
 
 		matrix[index.first][index.second] = &block;
 	}
-	
-	for( size_t i=0; i<matrix.size(); ++i )
+
+	for( size_t i = 0; i < matrix.size(); ++i )
 	{
 		for( size_t j = 0; j < matrix[i].size(); ++j )
 		{
@@ -214,7 +209,7 @@ std::string Generator::getResultAsCSV( const char SEPERATOR )
 			}
 
 			const Candidate *assignedCandidate = block->getAssignedCandidate();
-			
+
 			if( assignedCandidate != nullptr )
 			{
 				const std::string candidateName = matrix[i][j]->getAssignedCandidate()->getName();
@@ -222,25 +217,18 @@ std::string Generator::getResultAsCSV( const char SEPERATOR )
 			}
 			else
 			{
-				resultMatrix[i+1][j+1] = "";
+				resultMatrix[i + 1][j + 1] = "";
 			}
 		}
 	}
 
 	// collect result in stringstream
-	for( size_t i = 0; i<resultMatrix.size(); ++i )
+	for( size_t i = 0; i < resultMatrix.size(); ++i )
 	{
 		for( size_t j = 0; j < resultMatrix[i].size(); ++j )
 		{
 			std::string data = resultMatrix[i][j];
-
-			// if has newline, add removed quotes to tell CSV, that data need to be newlined in single column field
-			if( data.find("\n") != std::string::npos )
-			{
-				data = "\"" + data + "\"";
-			}
-
-			outStream << data << SEPERATOR;
+			outStream << data << this->csvParser.getSeperator();
 		}
 		outStream << std::endl;
 	}
@@ -260,7 +248,7 @@ void Generator::distributeBlocks()
 		while( this->getFreeBlocksByCandidatesCnt( candidateCount ).size() > 0 )
 		{
 			Block *mostCriticalBlock = getMostCriticalBlock( this->getFreeBlocksByCandidatesCnt( candidateCount ) );
-			
+
 			if( mostCriticalBlock != nullptr )
 			{
 				Candidate *mostCriticalCandidate = this->getMostCriticalCandidate( mostCriticalBlock->getCandidates() );
@@ -315,7 +303,7 @@ std::vector<Block*> Generator::getFreeBlocksByCandidatesCnt( const size_t candid
 	{
 		if( block.isFree() && block.getCandidateCnt() == candidatesCnt )
 		{
-			candidateCountedBlocks.push_back( const_cast<Block*>(&block) );
+			candidateCountedBlocks.push_back( const_cast<Block*>( &block ) );
 		}
 	}
 
@@ -335,16 +323,15 @@ Block* Generator::getMostCriticalBlock( const std::vector<Block*> &blocksVec ) c
 	else
 	{
 		auto smallestWeigthingBlock = std::min_element( blocksVec.begin(), blocksVec.end(),
-			[this]( const Block *a, const Block *b ) -> bool
-			{
-				auto candidatesA = a->getCandidates();
-				auto candidatesB = b->getCandidates();
-					
-				return this->countWishWeighting( candidatesA ) < this->countWishWeighting( candidatesB );
-			}
+														[this]( const Block *a, const Block *b ) -> bool{
+			auto candidatesA = a->getCandidates();
+			auto candidatesB = b->getCandidates();
+
+			return this->countWishWeighting( candidatesA ) < this->countWishWeighting( candidatesB );
+		}
 		);
 
-		return const_cast<Block*>(*smallestWeigthingBlock);
+		return const_cast<Block*>( *smallestWeigthingBlock );
 	}
 }
 
@@ -361,28 +348,28 @@ Candidate* Generator::getMostCriticalCandidate( const std::vector<Candidate*> &c
 	else
 	{
 		auto smallestWeigthingCandidate = std::min_element( candidatesVec.begin(), candidatesVec.end(),
-									[this]( const Candidate *a, const Candidate *b ) -> bool {
-			
-										if( a->getAssignedBlockCnt() > b->getAssignedBlockCnt() )
-										{
-											return false;
-										}
-										else if( a->getAssignedBlockCnt() < b->getAssignedBlockCnt() )
-										{
-											return true;
-										}
-										else
-										{
-											if( a->getWishedBlockCnt() >= b->getWishedBlockCnt() )
-											{
-												return false;
-											}
-											else
-											{
-												return true;
-											}
-										}
-									}
+															[this]( const Candidate *a, const Candidate *b ) -> bool{
+
+			if( a->getAssignedBlockCnt() > b->getAssignedBlockCnt() )
+			{
+				return false;
+			}
+			else if( a->getAssignedBlockCnt() < b->getAssignedBlockCnt() )
+			{
+				return true;
+			}
+			else
+			{
+				if( a->getWishedBlockCnt() >= b->getWishedBlockCnt() )
+				{
+					return false;
+				}
+				else
+				{
+					return true;
+				}
+			}
+		}
 		);
 
 		return const_cast<Candidate*>( *smallestWeigthingCandidate );

@@ -23,9 +23,9 @@ must be preserved.Contributors provide an express grant of patent rights.
 
 Block::Block( const size_t rowIndex, const size_t columnIndex,
 			  const std::string &rowName, const std::string &columnName )
-: index{ std::make_pair(rowIndex,columnIndex) }
-, blockName{ std::make_pair( rowName, columnName ) }
-, assignedCandidate{ nullptr }
+	: index{ std::make_pair( rowIndex,columnIndex ) }
+	, blockName{ std::make_pair( rowName, columnName ) }
+	, assignedCandidate{ nullptr }
 {
 }
 
@@ -34,9 +34,9 @@ void Block::addCandidate( const Candidate *const candidate )
 	auto existingCandidate = std::find_if( this->candidates.begin(),
 										   this->candidates.end(),
 										   [&]( const auto &candidatePtr ){
-												return candidatePtr == candidate;
-											}
-							);
+		return candidatePtr == candidate;
+	}
+	);
 
 	if( existingCandidate == this->candidates.end() )
 	{

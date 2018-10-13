@@ -1,210 +1,403 @@
-/*
-
-Author:			Tutor Exilius (http://www.exilius.de)
-
-Created:		04.10.2018
-Last update:	09.10.2018
-
-GNU General Public License v3.0
-
-Permissions of this strong copyleft license are conditioned on making available
-complete source code of licensed works and modifications, which include larger
-works using a licensed work, under the same license.Copyright and license notices
-must be preserved.Contributors provide an express grant of patent rights.
-
-*/
-
-
 #include "csvparser.h"
 
 #include "file_not_exist_exception.h"
 
-#include <algorithm>
+#include <cmath>
+#include <cstring>
 #include <fstream>
-#include <iostream>
 #include <sstream>
 
-#include "generator.h"
+// static ---
+std::string CSVParser::extractFileName( const std::string &fullFileName )
+{
+	std::string tmpFileName = CSVParser::replaceAll( fullFileName, "/", "\\" );
 
-CSVParser::CSVParser( const std::string &fileName, const char SEPERATOR )
-: currentLineReadState{ CSVParser::LINE_READ_STATE::SEARCHING_HEADER_ROW }
-, csvFile{ fileName }
-, seperator{ SEPERATOR }
+	const size_t pos = tmpFileName.find_last_of( '\\' );
+
+	if( pos != std::string::npos && pos + 1 < tmpFileName.size() )
+	{
+		return std::move( tmpFileName.substr( pos + 1 ) );
+	}
+	else if( tmpFileName.size() > 0 )
+	{
+		return tmpFileName;
+	}
+	else
+	{
+		return "";
+	}
+}
+
+std::string CSVParser::extractFilePath( const std::string &fullFileName )
+{
+	std::string tmpFileName = CSVParser::replaceAll( fullFileName, "/", "\\" );
+
+	const size_t pos = tmpFileName.find_last_of( '\\' );
+
+	if( pos != std::string::npos )
+	{
+		return std::move( tmpFileName.substr( 0, pos + 1 ) );
+	}
+	else
+	{
+		return "";
+	}
+}
+
+std::string CSVParser::replaceAll( std::string str, const std::string &from, const std::string &to )
+{
+	size_t start_pos = 0;
+
+	while( ( start_pos = str.find( from, start_pos ) ) != std::string::npos )
+	{
+		str.replace( start_pos, from.size(), to );
+		start_pos += to.size();
+	}
+
+	return std::move( str );
+}
+
+std::vector<std::string> CSVParser::combineMissplittedColumns( const std::vector<std::string> &seperatedColumns )
+{
+	std::vector<std::string> recombined;
+	std::string data;
+
+	bool combineMode = false;
+
+	for( const auto column : seperatedColumns )
+	{
+		bool isValid = CSVParser::isValidQuoted( column );
+
+		if( isValid && !combineMode )
+		{
+			if( data.size() > 0 )
+			{
+				data.pop_back();
+				recombined.push_back( data );
+				data.clear();
+			}
+
+			recombined.push_back( column );
+		}
+		else
+		{
+			bool finishCombination = false;
+
+			if( combineMode && !isValid )
+			{
+				combineMode = false;
+				finishCombination = true;
+			}
+			else if( !combineMode )
+			{
+				combineMode = true;
+			}
+
+			data += column + ';';
+
+			if( finishCombination )
+			{
+				if( data.size() > 0 )
+				{
+					data.pop_back();
+					recombined.push_back( data );
+					data.clear();
+				}
+			}
+		}
+	}
+
+	if( data.size() > 0 )
+	{
+		recombined.push_back( data );
+	}
+
+	return std::move( recombined );
+}
+
+void CSVParser::maskColumnNewlines( std::vector<std::string> &seperatedColumns )
+{
+	for( auto &column : seperatedColumns )
+	{
+		if( column.size() >= 2 )
+		{
+			auto startDoubleQuote = column.find_first_of( '\"' );
+			auto endDoubleQuote = column.find_last_of( '\"' );
+
+			if( startDoubleQuote != std::string::npos && endDoubleQuote != std::string::npos &&
+				startDoubleQuote < endDoubleQuote )
+			{
+				if( CSVParser::count( column, '\"' ) > 2 )
+				{
+					endDoubleQuote = column.substr( 0, endDoubleQuote - 1 ).find_last_of( '\"' );
+				}
+
+				std::string tmp = column.substr( startDoubleQuote, endDoubleQuote - startDoubleQuote );
+				tmp = CSVParser::replaceAll( tmp, "\n", "\\n" );
+
+				column = column.replace( startDoubleQuote, endDoubleQuote - startDoubleQuote, tmp );
+			}
+		}
+	}
+}
+
+void CSVParser::unMaskColumnNewlines( std::vector<std::string> &rows )
+{
+	for( auto &row : rows )
+	{
+		row = CSVParser::replaceAll( row, "\\n", "\n" );
+	}
+}
+
+bool CSVParser::isValidQuoted( const std::string &str )
+{
+	size_t cnt = CSVParser::count( str, '\"' );
+
+	if( CSVParser::isEven( static_cast<int>( cnt ) ) )
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+size_t CSVParser::count( const std::string &str, const char ch )
+{
+	size_t cnt = 0;
+
+	for( const auto &c : str )
+	{
+		if( ch == c )
+		{
+			++cnt;
+		}
+	}
+
+	return cnt;
+}
+
+bool CSVParser::isEven( const int &num )
+{
+	return ( num % 2 == 0 );
+}
+
+std::string CSVParser::generateRandomString( const size_t stringLength )
+{
+	std::string maskingChars{ "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567890" };
+
+	std::string str( stringLength, '\0' );
+
+	for( size_t i = 0; i < stringLength; ++i )
+	{
+		const size_t randIndex = std::rand() % maskingChars.size();
+		str[i] = maskingChars[randIndex];
+	}
+
+	return str;
+}
+// ---
+
+CSVParser::CSVParser( const char seperator )
+	: seperator{ seperator }
 {
 }
 
-void CSVParser::parse()
-{	
-	this->resetParser();
+CSVParser::~CSVParser() = default;
 
-	std::ifstream inFile{ this->csvFile };
+void CSVParser::parse( const std::string &fullFileName )
+{
+	this->setFullFileName( fullFileName );
+
+	std::ifstream inFile{ this->getFullFileName() };
 
 	if( !inFile )
 	{
-		const std::string errorMessage = "file couldn't be opened: " + this->csvFile;
-		throw FileNotExistException( errorMessage );
+		throw FileNotExistException{ "Not found: '" + this->getFullFileName() + "'" };
 	}
 
-	std::string line;
-	std::vector<std::string> allColumnData;
+	// read CSV File ---
+	std::vector<std::string> withSeperatorSeperatedData;
+	std::string seperatedColum;
 
-	// Read all Data and mask all newlines in each single Data-Columns-Field value
-	while (getline(inFile, line, this->seperator))
+	while( std::getline( inFile, seperatedColum, this->seperator ) )
 	{
-		if (line.size() > 0)
-		{
-			// begin try to fix bug (issue 2, github repo: https://github.com/TutorExilius/ShiftRosterGenerator/issues/2)
-			/* begin to fix...
-
-			//
-			//
-			//
-
-			size_t doubleQuoteCnt = 0;
-			std::for_each(line.begin(), line.end(), [&doubleQuoteCnt]( const char &c ) {
-					if (c == '\"')
-					{
-						++doubleQuoteCnt;
-					}
-				}
-			);
-
-			if( doubleQuoteCnt == 2 )
-			{
-				line = Generator::replaceAll(line, "\"", "");
-			}
-
-			//
-			//
-			// commented out. bugfix is not finished yet
-			*/
-
-
-			
-			// CSV masks value of column field in quotes (") if field value has more than 1 line in text
-			if( line[0] == '\"' && line[line.size() - 1] == '\"' )
-			{
-				// mask newlines
-				line = Generator::replaceAll(line, "\"", "");
-				line = Generator::replaceAll(line, "\n", "\\n");
-				line = Generator::trim(line);
-			}
-			else if (line[line.size() - 1] == '\"' && line.find("\n") != std::string::npos )
-			{
-				allColumnData.push_back( line.substr(0, line.find("\n")+1 ) );
-				
-				if( line.size() >= line.find("\n") + 1 )
-				{
-					line = line.substr(line.find("\n")+1);
-				}
-				else
-				{
-					line = line.substr(line.find("\n"));
-				}
-
-				line = Generator::replaceAll(line, "\"", "");
-				line = Generator::replaceAll(line, "\n", "\\n");
-				line = Generator::trim(line);
-			}
-
-			line = Generator::trim(line);
-		}
-
-		allColumnData.push_back( line );
+		withSeperatorSeperatedData.push_back( seperatedColum );
 	}
 
+	inFile.close();
+	// ---
+
+	withSeperatorSeperatedData = CSVParser::combineMissplittedColumns( withSeperatorSeperatedData );
+
+	CSVParser::maskColumnNewlines( withSeperatorSeperatedData );
+	CSVParser::maskColumnSeperators( withSeperatorSeperatedData );
+
+	std::vector<std::string> rows = CSVParser::createRows( withSeperatorSeperatedData );
+
+	CSVParser::unMaskColumnNewlines( rows );
+
+	this->mapCSVData( rows );
+}
+
+void CSVParser::parse( const std::string &fullFileName, const char seperator )
+{
+	this->seperator = seperator;
+	this->parse( fullFileName );
+}
+
+std::string CSVParser::getFileName() const
+{
+	return this->fileName;
+}
+
+std::string CSVParser::getFilePath() const
+{
+	return this->filePath;
+}
+
+std::string CSVParser::getFullFileName() const
+{
+	return this->filePath + this->fileName;
+}
+
+const CSVParser::Matrix& CSVParser::getCSVMatrix() const
+{
+	return this->csvDataMatrix;
+}
+
+std::string CSVParser::getCSVOutput() const
+{
 	std::stringstream ss;
 
-	// write all Column-Data back to a stream after masking newlines in each Data-Columns-Field value 
-	for (const auto &data : allColumnData)
+	for( const auto &xVec : this->csvDataMatrix )
 	{
-		ss << data;
+		size_t cntColumn = 0;
+		for( const auto yVec : xVec )
+		{
+			ss << yVec;
 
-		if( (data.size() == 0) || (data[data.size() - 1] != '\n') )
+			if( ++cntColumn < xVec.size() )
+			{
+				ss << this->seperator;
+			}
+		}
+		ss << std::endl;
+	}
+
+	return ss.str();
+}
+
+char CSVParser::getSeperator() const
+{
+	return this->seperator;
+}
+
+void CSVParser::setFullFileName( const std::string &fullFileName )
+{
+	this->setFileName( CSVParser::extractFileName( fullFileName ) );
+	this->setFilePath( CSVParser::extractFilePath( fullFileName ) );
+}
+
+void CSVParser::setFileName( const std::string &fileName )
+{
+	this->fileName = fileName;
+}
+
+void CSVParser::setFilePath( const std::string &filePath )
+{
+	this->filePath = filePath;
+}
+
+std::vector<std::string> CSVParser::createRows( const std::vector<std::string> &seperatedColumns )
+{
+	std::vector<std::string> rows;
+	std::stringstream ss;
+
+	size_t cnt = 0;
+	for( const auto &column : seperatedColumns )
+	{
+		ss << column;
+
+		if( ++cnt < seperatedColumns.size() )
 		{
 			ss << this->seperator;
 		}
 	}
 
-	while( getline( ss, line ) )
+	std::string row;
+	while( std::getline( ss, row ) )
 	{
-		this->readLine( line );
+		rows.push_back( row );
 	}
 
-	this->clearLastEmptyRows(); 
-	this->currentLineReadState = LINE_READ_STATE::FINISHED;
+	return std::move( rows );
 }
 
-void CSVParser::resetParser()
+void CSVParser::maskColumnSeperators( std::vector<std::string> &rows )
 {
-	this->currentLineReadState = LINE_READ_STATE::SEARCHING_HEADER_ROW;
-	this->data_matrix.clear();
-}
+	// find masking string, that can be used as seperator-masker ---
+	bool foundUniqueString = false;
 
-void CSVParser::readLine( const std::string &line, const char SEPERATOR )
-{
-	std::vector<std::string> seperatedValues = Generator::split( line, SEPERATOR );
-
-	if( this->currentLineReadState == LINE_READ_STATE::SEARCHING_HEADER_ROW )
+	size_t generateStrLenght = 3;
+	do
 	{
-		auto result = std::find_if( seperatedValues.begin(),
-									seperatedValues.end(),
-									[]( const auto &val ){
-										return val.size() > 0;
-									}
-		);
+		const std::string randomString = CSVParser::generateRandomString( generateStrLenght );
 
-		if( result != seperatedValues.end() )
+		// 
+		for( const auto &row : rows )
 		{
-			std::for_each( seperatedValues.begin(), seperatedValues.end(),
-				[](std::string &value) {
-					// unmask newlines in row-titles
-					value = Generator::replaceAll(value, "\\n", "\n");
-				}
-			);
+			if( row.find( randomString ) != std::string::npos )
+			{
+				// found unique string in row, so break loop and generate new string
+				break;
+			}
 
-			this->spanColumnVector( seperatedValues );
-		}
-	}
-	else
-	{
-		// unmask column-title. First value in vactor represents the column title!
-		if( seperatedValues.size() > 0 )
-		{
-			// first value = index 0!
-			seperatedValues[0] = Generator::replaceAll( seperatedValues[0], "\\n", "\n" );
+			// randomString not found, so randomString is unique!
+			this->seperatorMaskingStr = randomString;
+			foundUniqueString = true;
 		}
 
-		this->data_matrix.emplace_back( std::move( seperatedValues ) );
+	} while( !foundUniqueString );
+	// ---
+
+	for( auto &row : rows )
+	{
+		row = CSVParser::replaceAll( row, std::string{ this->seperator }, this->seperatorMaskingStr );
 	}
 }
 
-void CSVParser::spanColumnVector( std::vector<std::string> &columns )
+void CSVParser::mapCSVData( const std::vector<std::string> &rows )
 {
-	this->data_matrix.emplace_back( std::move(columns) );
-	this->currentLineReadState = LINE_READ_STATE::READING_DATA_ROW;
-}
+	size_t rowsCnt = 0;
+	size_t cntColumnTitles = 0;
 
-void CSVParser::clearLastEmptyRows()
-{
-	while( this->data_matrix.size() > 0  )
+	for( const auto &row : rows )
 	{
-		auto lastItem = this->data_matrix.back();
+		++rowsCnt;
 
-		auto result = std::find_if( lastItem.begin(),
-									lastItem.end(),
-									[]( const auto &val ){
-										return val.size() > 0;
-									}
-		);
+		std::stringstream ss{ row };
+		std::vector<std::string> columns;
 
-		if( result == lastItem.end() )
+		std::string column;
+		while( std::getline( ss, column, this->seperator ) )
 		{
-			this->data_matrix.pop_back();
+			column = CSVParser::replaceAll( column, this->seperatorMaskingStr, std::string{ this->seperator } );
+			columns.push_back( column );
 		}
-		else
+
+		if( rowsCnt == 1 )
 		{
-			break;
+			cntColumnTitles = columns.size();
 		}
+
+		csvDataMatrix.emplace_back( std::move( columns ) );
+	}
+
+	// resize vectors to column-title length
+	for( auto &xVec : this->csvDataMatrix )
+	{
+		xVec.resize( this->csvDataMatrix[0].size() ); // first index contains the vector of column-titles
 	}
 }

@@ -22,18 +22,18 @@ must be preserved.Contributors provide an express grant of patent rights.
 #include <algorithm>
 
 Candidate::Candidate( const std::string &name )
-: name{ name }
+	: name{ name }
 {
 }
 
 void Candidate::addWishBlock( const Block *const block )
 {
 	auto existingBlock = std::find_if( this->wishedBlocks.begin(),
-					  this->wishedBlocks.end(),
-					  [&]( const auto &blockPtr ){
-						return blockPtr == block;
-					  }
-			);
+									   this->wishedBlocks.end(),
+									   [&]( const auto &blockPtr ){
+		return blockPtr == block;
+	}
+	);
 
 	if( existingBlock == this->wishedBlocks.end() )
 	{

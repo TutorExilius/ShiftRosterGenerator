@@ -1,20 +1,3 @@
-/*
-
-Author:			Tutor Exilius (http://www.exilius.de)
-
-Created:		04.10.2018
-Last update:	09.10.2018
-
-GNU General Public License v3.0
-
-Permissions of this strong copyleft license are conditioned on making available
-complete source code of licensed works and modifications, which include larger
-works using a licensed work, under the same license.Copyright and license notices
-must be preserved.Contributors provide an express grant of patent rights.
-
-*/
-
-
 #ifndef CSVPARSER_H
 #define CSVPARSER_H
 
@@ -24,41 +7,55 @@ must be preserved.Contributors provide an express grant of patent rights.
 class CSVParser
 {
 public:
-	enum class LINE_READ_STATE
-	{
-		SEARCHING_HEADER_ROW,
-		READING_DATA_ROW,
-		FINISHED
-	};
+	using Matrix = std::vector<std::vector<std::string>>;
 
-	explicit CSVParser( const std::string &fileName, const char SEPERATOR = ';' );
+	static std::string extractFileName( const std::string &fullFileName );
+	static std::string extractFilePath( const std::string &fullFileName );
+	static std::string replaceAll( std::string str, const std::string &from, const std::string &to );
+	static std::vector<std::string> combineMissplittedColumns( const std::vector<std::string> &seperatedColumns );
+	static void maskColumnNewlines( std::vector<std::string> &seperatedColumns );
+	static void unMaskColumnNewlines( std::vector<std::string> &rows );
+	static bool isValidQuoted( const std::string &str );
+	static size_t count( const std::string &str, const char ch );
+	static bool isEven( const int &num );
+	static std::string generateRandomString( const size_t stringLength );
 
-	void parse();
+	CSVParser( const char seperator = ';' );
+	virtual ~CSVParser();
 
-	const std::vector<std::vector<std::string>>& getDataMatrix() const
-	{
-		return this->data_matrix;
-	}
+	void parse( const std::string &fullFileName );
+	void parse( const std::string &fullFileName, const char seperator );
+
+	std::string getFileName() const;
+	std::string getFilePath() const;
+	std::string getFullFileName() const;
+	const Matrix& getCSVMatrix() const;
+	std::string getCSVOutput() const;
+	char getSeperator() const;
+
+	void setFullFileName( const std::string &fullFileName );
 
 private:
 	// deletes ---
-	CSVParser( const CSVParser& ) = delete;
-	CSVParser( CSVParser&& ) = delete;
-	CSVParser& operator=( const CSVParser& ) = delete;
-	CSVParser&& operator=( CSVParser&& ) = delete;
+	CSVParser( const CSVParser &obj ) = delete;
+	CSVParser( CSVParser &&obj ) = delete;
+	CSVParser& operator=( const CSVParser &obj ) = delete;
+	CSVParser& operator=( CSVParser &&obj ) = delete;
 	// ---
 
-	// Helper-Methods ---
-	void resetParser();
-	void readLine( const std::string &line, const char SEPERATOR = ';' );
-	void spanColumnVector( std::vector<std::string> &columns );
-	void clearLastEmptyRows();
+	// helper-methods ---
+	void setFileName( const std::string &fileName );
+	void setFilePath( const std::string &filePath );
+	std::vector<std::string> createRows( const std::vector<std::string> &seperatedColumns );
+	void maskColumnSeperators( std::vector<std::string> &rows );
+	void mapCSVData( const std::vector<std::string> &rows );
 	// ---
 
-	LINE_READ_STATE currentLineReadState;
-	std::string csvFile;
-	std::vector<std::vector<std::string>> data_matrix;
+	std::string fileName;
+	std::string filePath;
 	char seperator;
+	Matrix csvDataMatrix;
+	std::string seperatorMaskingStr;
 };
 
 #endif // CSVPARSER_H

@@ -34,8 +34,7 @@ public:
 
 	explicit Generator( const std::string &fileName );
 
-	void printBlocks() const;
-	std::string getResultAsCSV( const char SEPERATOR = ';' );
+	std::string getResultAsCSV() const;
 
 	Candidate* getCandidate( const std::string &name )
 	{
@@ -57,7 +56,7 @@ public:
 	{
 		size_t wishWeigth = 0;
 
-		for( const auto &candidate : candidatesVec)
+		for( const auto &candidate : candidatesVec )
 		{
 			wishWeigth += candidate->getWishedBlockCnt();
 		}

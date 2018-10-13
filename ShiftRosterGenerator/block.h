@@ -37,7 +37,7 @@ public:
 
 	bool isFree() const
 	{
-		return (this->assignedCandidate == nullptr);
+		return ( this->assignedCandidate == nullptr );
 	}
 
 	size_t getCandidateCnt() const

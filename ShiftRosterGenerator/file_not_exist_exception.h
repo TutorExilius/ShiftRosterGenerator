@@ -25,7 +25,7 @@ class FileNotExistException : public std::exception
 {
 public:
 	FileNotExistException( const std::string &errorMessage )
-	: errorMessage{ errorMessage }
+		: errorMessage{ errorMessage }
 	{
 	}
 
